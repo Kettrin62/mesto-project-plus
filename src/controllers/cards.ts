@@ -18,4 +18,17 @@ export const createCard = (req: Request, res: Response) => {
   })
     .then(card => res.send(card))
     .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
-}
+};
+
+export const deleteCardById = (req: Request, res: Response) => {
+  const id = req.params.cardId;
+
+  Card.findByIdAndRemove(id)
+    .then(card => {
+      if (!card) {
+        res.status(500).send({ message: 'Такой карточки не существует' })
+      }
+      res.send(card)
+    })
+    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+};

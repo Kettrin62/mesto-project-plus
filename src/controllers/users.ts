@@ -25,10 +25,9 @@ export const getUserById = (req: Request, res: Response) => {
   User.findById(id)
     .then(user => {
       if (!user) {
-        res.status(500).send({ message: 'Пользователь по указанному id не найден' })
-      } else {
-        res.send(user)
+        res.status(500).send({ message: 'Такого пользователя не существует' })
       }
+      res.send(user)
     })
     .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
 };
