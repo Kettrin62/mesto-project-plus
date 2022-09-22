@@ -20,5 +20,15 @@ export const createUser = (req: Request, res: Response) => {
 };
 
 export const getUserById = (req: Request, res: Response) => {
+  const id = req.params.userId;
 
+  User.findById(id)
+    .then(user => {
+      if (!user) {
+        res.status(500).send({ message: 'Пользователь по указанному id не найден' })
+      } else {
+        res.send(user)
+      }
+    })
+    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
 };

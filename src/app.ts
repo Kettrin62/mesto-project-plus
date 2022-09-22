@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import usersRoutes from './routes/users';
+import cardsRoutes from './routes/cards';
 
 const { PORT = 3000 } = process.env;
 
@@ -20,6 +21,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/users', usersRoutes);
+
+app.use('/cards', cardsRoutes);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает

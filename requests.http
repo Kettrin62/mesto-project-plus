@@ -60,6 +60,15 @@ GET http://localhost:3000/users
 Content-Type: application/json
 
 
+###
+
+GET http://localhost:3000/users/632c52e10053f19ca8e6dd8b
+Content-Type: application/json
+
+###
+
+GET http://localhost:3000/users/632c58ab0053f19ca8e6dd8d
+Content-Type: application/json
 
 
 
