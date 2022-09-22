@@ -20,9 +20,9 @@ export const createUser = (req: Request, res: Response) => {
 };
 
 export const getUserById = (req: Request, res: Response) => {
-  const id = req.params.userId;
+  const { userId } = req.params;
 
-  User.findById(id)
+  User.findById(userId)
     .then(user => {
       if (!user) {
         res.status(500).send({ message: 'Такого пользователя не существует' })

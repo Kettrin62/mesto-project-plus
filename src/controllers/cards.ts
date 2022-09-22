@@ -9,21 +9,57 @@ export const getCards = (req: Request, res: Response) => {
 
 export const createCard = (req: Request, res: Response) => {
   const { name, link } = req.body;
-  const id = req.user!._id;
+  const userId = req.user!._id;
 
   Card.create({
     name,
     link,
-    owner: id
+    owner: userId
   })
     .then(card => res.send(card))
     .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 export const deleteCardById = (req: Request, res: Response) => {
-  const id = req.params.cardId;
+  const { cardId } = req.params;
 
-  Card.findByIdAndRemove(id)
+  Card.findByIdAndRemove(cardId)
+    .then(card => {
+      if (!card) {
+        res.status(500).send({ message: 'Такой карточки не существует' })
+      }
+      res.send(card)
+    })
+    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+export const likeCard = (req: Request, res: Response) => {
+  const { cardId } = req.params;
+  const userId = req.user!._id;
+
+  Card.findByIdAndUpdate(
+    cardId,
+    { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
+    { new: true },
+  )
+    .then(card => {
+      if (!card) {
+        res.status(500).send({ message: 'Такой карточки не существует' })
+      }
+      res.send(card)
+    })
+    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+export const dislikeCard = (req: Request, res: Response) => {
+  const { cardId } = req.params;
+  const userId = req.user!._id;
+
+  Card.findByIdAndUpdate(
+    cardId,
+    {  $pull: { likes: userId } }, // добавить _id в массив, если его там нет
+    { new: true },
+  )
     .then(card => {
       if (!card) {
         res.status(500).send({ message: 'Такой карточки не существует' })
