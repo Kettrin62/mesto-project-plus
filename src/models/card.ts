@@ -32,5 +32,5 @@ const cardSchema = new mongoose.Schema<ICard>({
     default: Date.now
   }
 });
-// напишите код здесь
-export default mongoose.model('card', cardSchema);
+
+export default mongoose.model<ICard>('card', cardSchema);

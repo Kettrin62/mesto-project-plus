@@ -24,5 +24,5 @@ const userSchema = new mongoose.Schema<IUser>({
     required: true
   }
 });
-// напишите код здесь
-export default mongoose.model('user', userSchema);
+
+export default mongoose.model<IUser>('user', userSchema);
