@@ -6,11 +6,14 @@ import {
 import Card from '../models/card';
 
 const NotFoundError = require('../errors/not-found-err');
+const DefaultError = require('../errors/default-err');
 
 export const getCards = (req: Request, res: Response) => {
   Card.find({})
     .then(cards => res.send(cards))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(err => {
+      throw new DefaultError('Произошла ошибка')
+    });
 };
 
 export const createCard = (req: Request, res: Response) => {
@@ -23,7 +26,9 @@ export const createCard = (req: Request, res: Response) => {
     owner: userId
   })
     .then(card => res.send(card))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(err => {
+      throw new DefaultError('Произошла ошибка')
+    });
 };
 
 export const deleteCardById = (
@@ -40,7 +45,9 @@ export const deleteCardById = (
       }
       res.send(card)
     })
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(err => {
+      throw new DefaultError('Произошла ошибка')
+    });
 };
 
 export const likeCard = (req: Request, res: Response) => {
@@ -58,7 +65,9 @@ export const likeCard = (req: Request, res: Response) => {
       }
       res.send(card)
     })
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(err => {
+      throw new DefaultError('Произошла ошибка')
+    });
 };
 
 export const dislikeCard = (req: Request, res: Response) => {
@@ -67,7 +76,7 @@ export const dislikeCard = (req: Request, res: Response) => {
 
   Card.findByIdAndUpdate(
     cardId,
-    {  $pull: { likes: userId } },
+    { $pull: { likes: userId } },
     { new: true },
   )
     .then(card => {
@@ -76,5 +85,7 @@ export const dislikeCard = (req: Request, res: Response) => {
       }
       res.send(card)
     })
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(err => {
+      throw new DefaultError('Произошла ошибка')
+    });
 };
