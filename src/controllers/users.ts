@@ -87,7 +87,10 @@ export const updateProfile = (
       res.send(user)
     })
     .catch(err => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
+        const error = new NotFoundError(errorMessages.userNotFound);
+        next(error);
+      } else if (err.name === 'ValidationError') {
         const error = new IncorrectDataError(errorMessages.userIncorrectData);
         next(error);
       } else {
@@ -116,7 +119,10 @@ export const updateAvatar = (
       res.send(user)
     })
     .catch(err => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
+        const error = new NotFoundError(errorMessages.userNotFound);
+        next(error);
+      } else if (err.name === 'ValidationError') {
         const error = new IncorrectDataError(errorMessages.userIncorrectData);
         next(error);
       } else {

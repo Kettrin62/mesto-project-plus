@@ -49,8 +49,8 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "name": "user",
-    "about": "admin ruled",
+    "name": "user2",
+    "about": "user ruled",
     "avatar": "https://i.pinimg.com/originals/4f/53/d1/4f53d166f64d6f87fc737845b91db497.jpg"
 }
 
@@ -72,11 +72,30 @@ Content-Type: application/json
 
 ###
 
+PATCH http://localhost:3000/users/me
+Content-Type: application/json
+
+{
+    "name": "admin",
+    "about": "user ruled"
+}
+
+###
+
+PATCH http://localhost:3000/users/me/avatar
+Content-Type: application/json
+
+{
+    "avatar": "https://i.pinimg.com/originals/4f/53/d1/4f53d166f64d6f87fc737845b91db497.jpg"
+}
+
+###
+
 POST http://localhost:3000/cards
 Content-Type: application/json
 
 {
-    "name": "beautiful place",
+    "name": "beautiful place dubble",
     "link": "https://bugaga.ru/uploads/posts/2013-12/1386102178_voshititelnye-mesta-12.jpg"
 }
 
@@ -87,7 +106,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:3000/cards/632c760a6057645af241bb9b/likes
+PUT http://localhost:3000/cards/632c760a6057645af241bb9/likes
 Content-Type: application/json
 
 ###

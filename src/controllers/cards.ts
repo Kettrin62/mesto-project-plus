@@ -90,6 +90,9 @@ export const likeCard = (
     })
     .catch(err => {
       if (err.name === 'CastError') {
+        const error = new NotFoundError(errorMessages.cardNotFound);
+        next(error);
+      } else if (err.name === 'ValidationError') {
         const error = new IncorrectDataError(errorMessages.cardIncorrectData);
         next(error);
       } else {
@@ -119,6 +122,9 @@ export const dislikeCard = (
     })
     .catch(err => {
       if (err.name === 'CastError') {
+        const error = new NotFoundError(errorMessages.cardNotFound);
+        next(error);
+      } else if (err.name === 'ValidationError') {
         const error = new IncorrectDataError(errorMessages.cardIncorrectData);
         next(error);
       } else {
