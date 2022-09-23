@@ -4,9 +4,11 @@ import {
   NextFunction
 } from 'express';
 import User from '../models/user';
+import { errorMessages } from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
 const DefaultError = require('../errors/default-err');
+const IncorrectDataError = require('../errors/incorrect-data-err');
 
 export const getUsers = (
   req: Request,
@@ -15,12 +17,14 @@ export const getUsers = (
 ) => {
   User.find({})
     .then(users => res.send(users))
-    .catch(err => {
-      throw new DefaultError('Произошла ошибка')
-    });
+    .catch(next);
 };
 
-export const createUser = (req: Request, res: Response) => {
+export const createUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, about, avatar } = req.body;
 
   User.create({
@@ -30,7 +34,12 @@ export const createUser = (req: Request, res: Response) => {
   })
     .then(user => res.send(user))
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'ValidationError') {
+        const error = new IncorrectDataError(errorMessages.userIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -44,12 +53,17 @@ export const getUserById = (
   User.findById(userId)
     .then(user => {
       if (!user) {
-        throw new NotFoundError('Запрашиваемый пользователь не найден')
+        throw new NotFoundError(errorMessages.userNotFound)
       }
       res.send(user)
     })
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'CastError') {
+        const error = new IncorrectDataError(errorMessages.userIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -68,12 +82,17 @@ export const updateProfile = (
   )
     .then(user => {
       if (!user) {
-        throw new NotFoundError('Запрашиваемый пользователь не найден')
+        throw new NotFoundError(errorMessages.userNotFound)
       }
       res.send(user)
     })
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'ValidationError') {
+        const error = new IncorrectDataError(errorMessages.userIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -92,11 +111,16 @@ export const updateAvatar = (
   )
     .then(user => {
       if (!user) {
-        throw new NotFoundError('Запрашиваемый пользователь не найден')
+        throw new NotFoundError(errorMessages.userNotFound)
       }
       res.send(user)
     })
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'ValidationError') {
+        const error = new IncorrectDataError(errorMessages.userIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };

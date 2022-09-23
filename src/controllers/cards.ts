@@ -4,19 +4,28 @@ import {
   NextFunction
 } from 'express';
 import Card from '../models/card';
+import { errorMessages } from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
 const DefaultError = require('../errors/default-err');
+const IncorrectDataError = require('../errors/incorrect-data-err');
 
-export const getCards = (req: Request, res: Response) => {
+
+export const getCards = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   Card.find({})
     .then(cards => res.send(cards))
-    .catch(err => {
-      throw new DefaultError('Произошла ошибка')
-    });
+    .catch(next);
 };
 
-export const createCard = (req: Request, res: Response) => {
+export const createCard = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, link } = req.body;
   const userId = req.user!._id;
 
@@ -27,7 +36,12 @@ export const createCard = (req: Request, res: Response) => {
   })
     .then(card => res.send(card))
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'ValidationError') {
+        const error = new IncorrectDataError(errorMessages.cardIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -41,16 +55,25 @@ export const deleteCardById = (
   Card.findByIdAndRemove(cardId)
     .then(card => {
       if (!card) {
-        throw new NotFoundError('Такой карточки не существует')
+        throw new NotFoundError(errorMessages.cardNotFound)
       }
       res.send(card)
     })
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'CastError') {
+        const error = new IncorrectDataError(errorMessages.cardIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
 
-export const likeCard = (req: Request, res: Response) => {
+export const likeCard = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { cardId } = req.params;
   const userId = req.user!._id;
 
@@ -61,16 +84,25 @@ export const likeCard = (req: Request, res: Response) => {
   )
     .then(card => {
       if (!card) {
-        throw new NotFoundError('Такой карточки не существует')
+        throw new NotFoundError(errorMessages.cardNotFound)
       }
       res.send(card)
     })
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'CastError') {
+        const error = new IncorrectDataError(errorMessages.cardIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
 
-export const dislikeCard = (req: Request, res: Response) => {
+export const dislikeCard = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { cardId } = req.params;
   const userId = req.user!._id;
 
@@ -81,11 +113,16 @@ export const dislikeCard = (req: Request, res: Response) => {
   )
     .then(card => {
       if (!card) {
-        throw new NotFoundError('Такой карточки не существует')
+        throw new NotFoundError(errorMessages.cardNotFound)
       }
       res.send(card)
     })
     .catch(err => {
-      throw new DefaultError('Произошла ошибка')
+      if (err.name === 'CastError') {
+        const error = new IncorrectDataError(errorMessages.cardIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
