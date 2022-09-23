@@ -1,5 +1,11 @@
-import { Request, Response } from 'express';
+import {
+  Request,
+  Response,
+  NextFunction
+} from 'express';
 import User from '../models/user';
+
+const NotFoundError = require('../errors/not-found-err');
 
 export const getUsers = (req: Request, res: Response) => {
   User.find({})
@@ -19,13 +25,17 @@ export const createUser = (req: Request, res: Response) => {
     .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-export const getUserById = (req: Request, res: Response) => {
+export const getUserById = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
   const { userId } = req.params;
 
   User.findById(userId)
     .then(user => {
       if (!user) {
-        res.status(500).send({ message: 'Такого пользователя не существует' })
+        throw new NotFoundError('Запрашиваемый пользователь не найден')
       }
       res.send(user)
     })

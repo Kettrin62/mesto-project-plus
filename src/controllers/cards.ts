@@ -1,5 +1,11 @@
-import { Request, Response } from 'express';
+import {
+  Request,
+  Response,
+  NextFunction
+} from 'express';
 import Card from '../models/card';
+
+const NotFoundError = require('../errors/not-found-err');
 
 export const getCards = (req: Request, res: Response) => {
   Card.find({})
@@ -20,13 +26,17 @@ export const createCard = (req: Request, res: Response) => {
     .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-export const deleteCardById = (req: Request, res: Response) => {
+export const deleteCardById = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
     .then(card => {
       if (!card) {
-        res.status(500).send({ message: 'Такой карточки не существует' })
+        throw new NotFoundError('Такой карточки не существует')
       }
       res.send(card)
     })
@@ -39,12 +49,12 @@ export const likeCard = (req: Request, res: Response) => {
 
   Card.findByIdAndUpdate(
     cardId,
-    { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: userId } },
     { new: true },
   )
     .then(card => {
       if (!card) {
-        res.status(500).send({ message: 'Такой карточки не существует' })
+        throw new NotFoundError('Такой карточки не существует')
       }
       res.send(card)
     })
@@ -57,12 +67,12 @@ export const dislikeCard = (req: Request, res: Response) => {
 
   Card.findByIdAndUpdate(
     cardId,
-    {  $pull: { likes: userId } }, // добавить _id в массив, если его там нет
+    {  $pull: { likes: userId } },
     { new: true },
   )
     .then(card => {
       if (!card) {
-        res.status(500).send({ message: 'Такой карточки не существует' })
+        throw new NotFoundError('Такой карточки не существует')
       }
       res.send(card)
     })
