@@ -1,39 +1,38 @@
 import {
   Request,
   Response,
-  NextFunction
+  NextFunction,
 } from 'express';
 import User from '../models/user';
 import { errorMessages } from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
-const DefaultError = require('../errors/default-err');
 const IncorrectDataError = require('../errors/incorrect-data-err');
 
 export const getUsers = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   User.find({})
-    .then(users => res.send(users))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
 export const createUser = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { name, about, avatar } = req.body;
 
   User.create({
     name,
     about,
-    avatar
+    avatar,
   })
-    .then(user => res.send(user))
-    .catch(err => {
+    .then((user) => res.send(user))
+    .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new IncorrectDataError(errorMessages.userIncorrectData);
         next(error);
@@ -44,20 +43,20 @@ export const createUser = (
 };
 
 export const getUserById = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { userId } = req.params;
 
   User.findById(userId)
-    .then(user => {
+    .then((user) => {
       if (!user) {
-        throw new NotFoundError(errorMessages.userNotFound)
+        throw new NotFoundError(errorMessages.userNotFound);
       }
-      res.send(user)
+      res.send(user);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         const error = new IncorrectDataError(errorMessages.userIncorrectData);
         next(error);
@@ -70,7 +69,7 @@ export const getUserById = (
 export const updateProfile = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = req.user!._id;
   const { name, about } = req.body;
@@ -78,15 +77,18 @@ export const updateProfile = (
   User.findOneAndUpdate(
     userId,
     { name, about },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
-    .then(user => {
+    .then((user) => {
       if (!user) {
-        throw new NotFoundError(errorMessages.userNotFound)
+        throw new NotFoundError(errorMessages.userNotFound);
       }
-      res.send(user)
+      res.send(user);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         const error = new NotFoundError(errorMessages.userNotFound);
         next(error);
@@ -102,7 +104,7 @@ export const updateProfile = (
 export const updateAvatar = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = req.user!._id;
   const { avatar } = req.body;
@@ -110,15 +112,18 @@ export const updateAvatar = (
   User.findOneAndUpdate(
     userId,
     { avatar },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
-    .then(user => {
+    .then((user) => {
       if (!user) {
-        throw new NotFoundError(errorMessages.userNotFound)
+        throw new NotFoundError(errorMessages.userNotFound);
       }
-      res.send(user)
+      res.send(user);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         const error = new NotFoundError(errorMessages.userNotFound);
         next(error);
