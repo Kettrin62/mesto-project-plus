@@ -4,7 +4,7 @@ import {
   NextFunction,
 } from 'express';
 import User from '../models/user';
-import { errorMessages } from '../utils/data';
+import errorMessages from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
 const IncorrectDataError = require('../errors/incorrect-data-err');

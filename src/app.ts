@@ -2,8 +2,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import usersRoutes from './routes/users';
 import cardsRoutes from './routes/cards';
-import { HttpServerError } from 'utils/classes';
-import { errorMessages } from './utils/data';
+import HttpServerError from 'utils/classes';
+import errorMessages from './utils/data';
 
 const { PORT = 3000 } = process.env;
 

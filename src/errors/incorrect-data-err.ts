@@ -1,7 +1,7 @@
 import { INCORRECT_DATA_ERROR } from '../utils/constants';
-import { HttpServerError } from '../utils/classes';
+import HttpServerError from '../utils/classes';
 
-export class IncorrectDataError extends HttpServerError {
+export default class IncorrectDataError extends HttpServerError {
   constructor(
     message: string,
     statusCode = INCORRECT_DATA_ERROR,
@@ -9,5 +9,3 @@ export class IncorrectDataError extends HttpServerError {
     super(message, statusCode);
   }
 }
-
-module.exports = IncorrectDataError;

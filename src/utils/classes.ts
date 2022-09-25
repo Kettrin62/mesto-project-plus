@@ -1,11 +1,11 @@
-export class HttpServerError extends Error {
-  statusCode: number
+export default class HttpServerError extends Error {
+  statusCode: number;
 
   constructor(
     message: string,
-    statusCode: number
+    statusCode: number,
   ) {
     super(message);
     this.statusCode = statusCode;
   }
-};
+}

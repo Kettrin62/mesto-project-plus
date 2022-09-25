@@ -1,7 +1,7 @@
 import { NOT_FOUND_ERROR } from '../utils/constants';
-import { HttpServerError } from '../utils/classes';
+import HttpServerError from '../utils/classes';
 
-export class NotFoundError extends HttpServerError {
+export default class NotFoundError extends HttpServerError {
   constructor(
     message: string,
     statusCode = NOT_FOUND_ERROR,
@@ -9,5 +9,3 @@ export class NotFoundError extends HttpServerError {
     super(message, statusCode);
   }
 }
-
-module.exports = NotFoundError;

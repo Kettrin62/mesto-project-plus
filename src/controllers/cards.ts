@@ -1,29 +1,28 @@
 import {
   Request,
   Response,
-  NextFunction
+  NextFunction,
 } from 'express';
 import Card from '../models/card';
-import { errorMessages } from '../utils/data';
+import errorMessages from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
 const IncorrectDataError = require('../errors/incorrect-data-err');
 
-
 export const getCards = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   Card.find({})
-    .then(cards => res.send(cards))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 
 export const createCard = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { name, link } = req.body;
   const userId = req.user!._id;
@@ -31,10 +30,10 @@ export const createCard = (
   Card.create({
     name,
     link,
-    owner: userId
+    owner: userId,
   })
-    .then(card => res.send(card))
-    .catch(err => {
+    .then((card) => res.send(card))
+    .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new IncorrectDataError(errorMessages.cardIncorrectData);
         next(error);
@@ -45,20 +44,20 @@ export const createCard = (
 };
 
 export const deleteCardById = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
-    .then(card => {
+    .then((card) => {
       if (!card) {
-        throw new NotFoundError(errorMessages.cardNotFound)
+        throw new NotFoundError(errorMessages.cardNotFound);
       }
-      res.send(card)
+      res.send(card);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         const error = new IncorrectDataError(errorMessages.cardIncorrectData);
         next(error);
@@ -71,7 +70,7 @@ export const deleteCardById = (
 export const likeCard = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   const userId = req.user!._id;
@@ -79,15 +78,18 @@ export const likeCard = (
   Card.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: userId } },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
-    .then(card => {
+    .then((card) => {
       if (!card) {
-        throw new NotFoundError(errorMessages.cardNotFound)
+        throw new NotFoundError(errorMessages.cardNotFound);
       }
-      res.send(card)
+      res.send(card);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         const error = new NotFoundError(errorMessages.cardNotFound);
         next(error);
@@ -103,7 +105,7 @@ export const likeCard = (
 export const dislikeCard = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   const userId = req.user!._id;
@@ -111,15 +113,18 @@ export const dislikeCard = (
   Card.findByIdAndUpdate(
     cardId,
     { $pull: { likes: userId } },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
-    .then(card => {
+    .then((card) => {
       if (!card) {
-        throw new NotFoundError(errorMessages.cardNotFound)
+        throw new NotFoundError(errorMessages.cardNotFound);
       }
-      res.send(card)
+      res.send(card);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         const error = new NotFoundError(errorMessages.cardNotFound);
         next(error);
