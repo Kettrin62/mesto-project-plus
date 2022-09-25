@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import User from './user';
 
 interface ICard {
   name: string;
@@ -11,7 +12,7 @@ interface ICard {
 const cardSchema = new mongoose.Schema<ICard>({
   name: {
     type: String,
-    minlength: 2,
+    minlength: [2, 'Название должно содержать не менее 2 символов'],
     maxlength: 30,
     required: true,
   },
@@ -22,10 +23,12 @@ const cardSchema = new mongoose.Schema<ICard>({
   owner: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: User,
   },
   likes: [{
     type: Schema.Types.ObjectId,
     default: [],
+    ref: User,
   }],
   createdAt: {
     type: Date,

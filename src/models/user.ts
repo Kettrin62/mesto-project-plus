@@ -9,13 +9,13 @@ interface IUser {
 const userSchema = new mongoose.Schema<IUser>({
   name: {
     type: String,
-    minlength: 2,
+    minlength: [2, 'Имя должно содержать не менее 2 символов'],
     maxlength: 30,
     required: true,
   },
   about: {
     type: String,
-    minlength: 2,
+    minlength: [2, 'Описание должно содержать не менее 2 символов'],
     maxlength: 200,
     required: true,
   },
