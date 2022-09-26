@@ -169,3 +169,27 @@ export const login = (
         .send({ message: err.message });
     });
 };
+
+export const getMyProfile = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.user!._id;
+
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(errorMessages.userNotFound);
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        const error = new IncorrectDataError(errorMessages.userIncorrectData);
+        next(error);
+      } else {
+        next(err);
+      }
+    });
+};
