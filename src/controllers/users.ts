@@ -3,6 +3,7 @@ import {
   Response,
   NextFunction,
 } from 'express';
+import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import errorMessages from '../utils/data';
 
@@ -24,22 +25,27 @@ export const createUser = (
   res: Response,
   next: NextFunction,
 ) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  User.create({
-    name,
-    about,
-    avatar,
-  })
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const error = new IncorrectDataError(errorMessages.userIncorrectData);
-        next(error);
-      } else {
-        next(err);
-      }
-    });
+  bcrypt.hash(password, 10)
+    .then((hash: string) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    })
+      .then((user) => res.send(user))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          const error = new IncorrectDataError(errorMessages.userIncorrectData);
+          next(error);
+        } else {
+          next(err);
+        }
+      }));
 };
 
 export const getUserById = (
