@@ -4,6 +4,7 @@ import {
   NextFunction,
 } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import errorMessages from '../utils/data';
 
@@ -139,5 +140,32 @@ export const updateAvatar = (
       } else {
         next(err);
       }
+    });
+};
+
+export const login = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' },
+      );
+
+      // вернём токен
+      res.send({ token });
+    })
+    .catch((err) => {
+      // ошибка аутентификации
+      res
+        .status(401)
+        .send({ message: err.message });
     });
 };
