@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel>({
     type: String,
     required: true,
     minlength: [8, 'Пароль должен содержать не менее 8 символов'],
+    select: false,
   },
 });
 
@@ -53,7 +54,7 @@ userSchema.static(
     email: string,
     password: string,
   ) {
-    return this.findOne({ email })
+    return this.findOne({ email }).select('+password')
       .then((user) => {
         if (!user) {
           return Promise.reject(new Error('Неправильные почта или пароль'));
