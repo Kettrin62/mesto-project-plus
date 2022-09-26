@@ -8,6 +8,7 @@ import errorMessages from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
 const IncorrectDataError = require('../errors/incorrect-data-err');
+const ForbiddenError = require('../errors/forbidden-err');
 
 export const getCards = (
   req: Request,
@@ -49,13 +50,26 @@ export const deleteCardById = (
   next: NextFunction,
 ) => {
   const { cardId } = req.params;
+  const userId = req.user!._id;
 
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError(errorMessages.cardNotFound);
       }
-      res.send(card);
+      if (card.owner !== userId) {
+        throw new ForbiddenError(errorMessages.fordbiddenCardDelete);
+      }
+      Card.deleteOne({ _id: cardId })
+        .then((cardDelete) => res.send(cardDelete))
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            const error = new IncorrectDataError(errorMessages.cardIncorrectData);
+            next(error);
+          } else {
+            next(err);
+          }
+        });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

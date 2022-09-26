@@ -4,4 +4,5 @@ export default {
   default: 'На сервере произошла ошибка',
   userIncorrectData: 'Переданы некорректные данные для пользователя',
   cardIncorrectData: 'Переданы некорректные данные для карточки',
+  fordbiddenCardDelete: 'Удаление чужой карточки недоступно',
 };
