@@ -4,6 +4,7 @@ import usersRoutes from './routes/users';
 import cardsRoutes from './routes/cards';
 import HttpServerError from 'utils/classes';
 import errorMessages from './utils/data';
+import { createUser, login } from './controllers/users';
 
 const { PORT = 3000 } = process.env;
 
@@ -25,6 +26,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/users', usersRoutes);
 
 app.use('/cards', cardsRoutes);
+
+app.post('/signin', login);
+
+app.post('/signup', createUser);
 
 app.use((
   err: HttpServerError,

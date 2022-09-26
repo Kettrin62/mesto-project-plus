@@ -146,7 +146,7 @@ export const updateAvatar = (
 export const login = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  // next: NextFunction,
 ) => {
   const { email, password } = req.body;
 
