@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { cardBodyValidator, cardIdValidator } from '../middlewares/validators';
 import {
   createCard,
   getCards,
@@ -11,12 +12,12 @@ const router = Router();
 
 router.get('/', getCards);
 
-router.post('/', createCard);
+router.post('/', cardBodyValidator, createCard);
 
-router.delete('/:cardId', deleteCardById);
+router.delete('/:cardId', cardIdValidator, deleteCardById);
 
-router.put('/:cardId/likes', likeCard);
+router.put('/:cardId/likes', cardIdValidator, likeCard);
 
-router.delete('/:cardId/likes', dislikeCard);
+router.delete('/:cardId/likes', cardIdValidator, dislikeCard);
 
 export default router;

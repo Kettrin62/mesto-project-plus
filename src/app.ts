@@ -9,6 +9,9 @@ import {
   requestLogger,
   errorLogger,
 } from './middlewares/logger';
+import { userBodyValidator } from './middlewares/validators';
+
+const { errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
 
@@ -21,8 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post('/signup', userBodyValidator, createUser);
+app.post('/signin', userBodyValidator, login);
 
 app.use(auth);
 
@@ -30,6 +33,8 @@ app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 
 app.use(errorLogger);
+
+app.use(errors());
 
 app.use(defaultError);
 
