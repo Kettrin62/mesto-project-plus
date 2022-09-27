@@ -1,11 +1,10 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import mongoose from 'mongoose';
 import usersRoutes from './routes/users';
 import cardsRoutes from './routes/cards';
-import HttpServerError from 'utils/classes';
-import errorMessages from './utils/data';
 import { createUser, login } from './controllers/users';
 import auth from './middlewares/auth';
+import defaultError from './middlewares/default-error';
 
 const { PORT = 3000 } = process.env;
 
@@ -24,24 +23,7 @@ app.use(auth);
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 
-app.use((
-  err: HttpServerError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? errorMessages.default
-        : message
-    });
-});
+app.use(defaultError);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает

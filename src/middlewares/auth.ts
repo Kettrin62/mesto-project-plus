@@ -4,15 +4,15 @@ import {
   NextFunction,
 } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import UnauthorizedError from '../errors/unauthorized-err';
+import { errorMessages } from '../utils/data';
 
 interface SessionRequest extends Request {
   user?: string | JwtPayload;
 }
 
-const handleAuthError = (res: Response) => {
-  res
-    .status(401)
-    .send({ message: 'Необходима авторизация' });
+const handleAuthError = () => {
+  throw new UnauthorizedError(errorMessages.unauthorized);
 };
 
 const extractBearerToken = (
@@ -27,7 +27,7 @@ export default (
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return handleAuthError(res);
+    return handleAuthError();
   }
 
   const token = extractBearerToken(authorization);
@@ -36,10 +36,12 @@ export default (
   try {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
-    return handleAuthError(res);
+    return handleAuthError();
   }
 
   req.user = payload;
 
   next();
+
+  return null;
 };

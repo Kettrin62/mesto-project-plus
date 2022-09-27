@@ -6,10 +6,12 @@ import {
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
-import errorMessages from '../utils/data';
+import { errorMessages } from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
 const IncorrectDataError = require('../errors/incorrect-data-err');
+const UnauthorizedError = require('../errors/unauthorized-err');
+const ConflictError = require('../errors/conflict-err');
 
 export const getUsers = (
   req: Request,
@@ -40,6 +42,10 @@ export const createUser = (
     })
       .then((user) => res.send(user))
       .catch((err) => {
+        if (err.code === 11000) {
+          const error = new ConflictError(errorMessages.userExists);
+          next(error);
+        }
         if (err.name === 'ValidationError') {
           const error = new IncorrectDataError(errorMessages.userIncorrectData);
           next(error);
@@ -146,7 +152,7 @@ export const updateAvatar = (
 export const login = (
   req: Request,
   res: Response,
-  // next: NextFunction,
+  next: NextFunction,
 ) => {
   const { email, password } = req.body;
 
@@ -162,11 +168,10 @@ export const login = (
       // вернём токен
       res.send({ token });
     })
-    .catch((err) => {
+    .catch(() => {
       // ошибка аутентификации
-      res
-        .status(401)
-        .send({ message: err.message });
+      const error = new UnauthorizedError(errorMessages.unauthorized);
+      next(error);
     });
 };
 

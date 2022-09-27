@@ -1,6 +1,11 @@
 import mongoose, { Model, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import isEmail from 'validator/lib/isEmail';
+import UnauthorizedError from '../errors/unauthorized-err';
+import {
+  errorMessages,
+  defaultDataUser,
+} from '../utils/data';
 
 interface IUser {
   name: string;
@@ -17,22 +22,24 @@ interface UserModel extends Model<IUser> {
   ) => Promise<Document<unknown, any, IUser>>
 }
 
+const { name, about, avatar } = defaultDataUser;
+
 const userSchema = new mongoose.Schema<IUser, UserModel>({
   name: {
     type: String,
     minlength: [2, 'Имя должно содержать не менее 2 символов'],
     maxlength: 30,
-    default: 'Жак-Ив Кусто',
+    default: name,
   },
   about: {
     type: String,
     minlength: [2, 'Описание должно содержать не менее 2 символов'],
     maxlength: 200,
-    default: 'Исследователь',
+    default: about,
   },
   avatar: {
     type: String,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    default: avatar,
   },
   email: {
     type: String,
@@ -57,12 +64,12 @@ userSchema.static(
     return this.findOne({ email }).select('+password')
       .then((user) => {
         if (!user) {
-          return Promise.reject(new Error('Неправильные почта или пароль'));
+          throw new UnauthorizedError(errorMessages.credentialsIncorrect);
         }
         return bcrypt.compare(password, user.password)
           .then((matched) => {
             if (!matched) {
-              return Promise.reject(new Error('Неправильные почта или пароль'));
+              throw new UnauthorizedError(errorMessages.credentialsIncorrect);
             }
             return user;
           });
