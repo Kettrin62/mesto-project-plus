@@ -5,6 +5,7 @@ import UnauthorizedError from '../errors/unauthorized-err';
 import {
   errorMessages,
   defaultDataUser,
+  regexUrl,
 } from '../utils/data';
 
 interface IUser {
@@ -40,6 +41,12 @@ const userSchema = new mongoose.Schema<IUser, UserModel>({
   avatar: {
     type: String,
     default: avatar,
+    validate: {
+      validator: (
+        value: string,
+      ) => regexUrl.test(value),
+      message: 'Неправильная ссылка',
+    },
   },
   email: {
     type: String,

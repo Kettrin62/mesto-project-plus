@@ -9,7 +9,7 @@ import {
   requestLogger,
   errorLogger,
 } from './middlewares/logger';
-import { userBodyValidator } from './middlewares/validators';
+import { authValidator, userBodyValidator } from './middlewares/validators';
 
 const { errors } = require('celebrate');
 
@@ -27,7 +27,7 @@ app.use(requestLogger);
 app.post('/signup', userBodyValidator, createUser);
 app.post('/signin', userBodyValidator, login);
 
-app.use(auth);
+app.use(authValidator, auth);
 
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);

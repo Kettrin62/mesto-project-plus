@@ -15,3 +15,6 @@ export const defaultDataUser = {
   about: 'Исследователь',
   avatar: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
 };
+
+export const regexUrl = /^https?:\/\/([\d\w.-]+)\.([\w.]{2,6})(\/?\S+)?$/;
+export const regexAuth = /[a-z0-9-]/;
