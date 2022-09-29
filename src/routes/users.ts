@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { userIdValidator, userBodyValidator } from '../middlewares/validators';
+import {
+  userIdValidator,
+  userProfileValidator,
+  userAvatarValidator,
+} from '../middlewares/validators';
 import {
   getMyProfile,
   getUserById,
@@ -16,8 +20,8 @@ router.get('/:userId', userIdValidator, getUserById);
 
 router.get('/me', getMyProfile);
 
-router.patch('/me', userBodyValidator, updateProfile);
+router.patch('/me', userProfileValidator, updateProfile);
 
-router.patch('/me/avatar', userBodyValidator, updateAvatar);
+router.patch('/me/avatar', userAvatarValidator, updateAvatar);
 
 export default router;

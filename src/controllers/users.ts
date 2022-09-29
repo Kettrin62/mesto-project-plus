@@ -10,7 +10,6 @@ import { errorMessages } from '../utils/data';
 
 const NotFoundError = require('../errors/not-found-err');
 const IncorrectDataError = require('../errors/incorrect-data-err');
-const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
 
 export const getUsers = (
@@ -45,6 +44,7 @@ export const createUser = (
         if (err.code === 11000) {
           const error = new ConflictError(errorMessages.userExists);
           next(error);
+          return;
         }
         if (err.name === 'ValidationError') {
           const error = new IncorrectDataError(errorMessages.userIncorrectData);
@@ -168,11 +168,7 @@ export const login = (
       // вернём токен
       res.send({ token });
     })
-    .catch(() => {
-      // ошибка аутентификации
-      const error = new UnauthorizedError(errorMessages.unauthorized);
-      next(error);
-    });
+    .catch(next);
 };
 
 export const getMyProfile = (

@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import User from './user';
+import { regexUrl } from '../utils/data';
 
 interface ICard {
   name: string;
@@ -19,6 +20,12 @@ const cardSchema = new mongoose.Schema<ICard>({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: (
+        value: string,
+      ) => regexUrl.test(value),
+      message: 'Неправильная ссылка',
+    },
   },
   owner: {
     type: Schema.Types.ObjectId,

@@ -8,6 +8,8 @@ export const errorMessages = {
   unauthorized: 'Необходима авторизация',
   credentialsIncorrect: 'Неправильные почта или пароль',
   userExists: 'Пользователь с такой почтой уже существует',
+  invalidId: 'Невалидный id',
+  invalidToken: 'Невалидный токен',
 };
 
 export const defaultDataUser = {
@@ -17,4 +19,5 @@ export const defaultDataUser = {
 };
 
 export const regexUrl = /^https?:\/\/([\d\w.-]+)\.([\w.]{2,6})(\/?\S+)?$/;
-export const regexAuth = /[a-z0-9-]/;
+export const regexAuth = /^[a-z0-9-]{36}$/;
+export const regexId = /^[a-f0-9]{24}$/;
