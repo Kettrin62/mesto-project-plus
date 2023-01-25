@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import usersRoutes from './routes/users';
 import cardsRoutes from './routes/cards';
@@ -9,7 +10,7 @@ import {
   requestLogger,
   errorLogger,
 } from './middlewares/logger';
-import { authValidator, userBodyValidator } from './middlewares/validators';
+import { userBodyValidator } from './middlewares/validators';
 
 const { errors } = require('celebrate');
 
@@ -19,6 +20,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 const app = express();
 
+app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,7 +30,7 @@ app.use(requestLogger);
 app.post('/signup', userBodyValidator, createUser);
 app.post('/signin', userBodyValidator, login);
 
-app.use(authValidator, auth);
+app.use(auth);
 
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);

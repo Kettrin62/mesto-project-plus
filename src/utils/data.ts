@@ -19,5 +19,5 @@ export const defaultDataUser = {
 };
 
 export const regexUrl = /^https?:\/\/([\d\w.-]+)\.([\w.]{2,6})(\/?\S+)?$/;
-export const regexAuth = /^[a-z0-9-]{36}$/;
+export const regexAuth = /[a-z0-9-]/;
 export const regexId = /^[a-f0-9]{24}$/;

@@ -57,7 +57,7 @@ export const deleteCardById = (
       if (!card) {
         throw new NotFoundError(errorMessages.cardNotFound);
       }
-      if (card.owner !== userId) {
+      if (card.owner.toString() !== userId) {
         throw new ForbiddenError(errorMessages.fordbiddenCardDelete);
       }
       Card.deleteOne({ _id: cardId })

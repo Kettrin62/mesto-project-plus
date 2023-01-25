@@ -1,16 +1,11 @@
 import IncorrectDataError from '../errors/incorrect-data-err';
-import { errorMessages, regexAuth, regexId } from '../utils/data';
+import { errorMessages, regexId } from '../utils/data';
 
 const { celebrate, Joi } = require('celebrate');
 
 const methodValidateId = (id: string) => {
   if (regexId.test(id)) return id;
   return new IncorrectDataError(errorMessages.invalidId);
-};
-
-const methodValidateToken = (token: string) => {
-  if (regexAuth.test(token)) return token;
-  return new IncorrectDataError(errorMessages.invalidToken);
 };
 
 export const userBodyValidator = celebrate({
@@ -52,11 +47,5 @@ export const cardBodyValidator = celebrate({
 export const cardIdValidator = celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().custom(methodValidateId, 'custom validation'),
-  }),
-});
-
-export const authValidator = celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().custom(methodValidateToken, 'custom validation'),
   }),
 });

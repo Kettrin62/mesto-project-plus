@@ -87,7 +87,7 @@ export const updateProfile = (
   const userId = req.user!._id;
   const { name, about } = req.body;
 
-  User.findOneAndUpdate(
+  User.findByIdAndUpdate(
     userId,
     { name, about },
     {
@@ -122,7 +122,7 @@ export const updateAvatar = (
   const userId = req.user!._id;
   const { avatar } = req.body;
 
-  User.findOneAndUpdate(
+  User.findByIdAndUpdate(
     userId,
     { avatar },
     {
@@ -164,7 +164,6 @@ export const login = (
         'some-secret-key',
         { expiresIn: '7d' },
       );
-
       // вернём токен
       res.send({ token });
     })
